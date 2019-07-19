@@ -76,6 +76,8 @@ def main(run, data_path, output_path, log_path, layer_width, batch_size, epochs,
 
     train_set = x_train.reshape((len(x_train), -1)) / 255.
 
+    info('Training')
+
     # function shape
     model = keras.Sequential([
         keras.layers.Dense(layer_width, activation='relu'),
@@ -92,7 +94,6 @@ def main(run, data_path, output_path, log_path, layer_width, batch_size, epochs,
     filename = datetime.now().strftime("%d.%b.%Y.%H.%M")
     checkpoint = ModelCheckpoint(os.path.join(output_path, filename + '.e{epoch:02d}-{accuracy:.2f}.hdf5'))
 
-    info('Training')
     model.fit(train_set, y_train, 
             epochs=epochs, 
             batch_size=batch_size,

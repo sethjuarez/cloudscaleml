@@ -17,7 +17,7 @@ class AMLCallback(tf.keras.callbacks.Callback):
 
     def set_model(self, model):
         self.model = model
-        print(self.model)
+        self.model.summary()
 
     def on_train_batch_end(self, batch, logs=None):
         if not self.offline:

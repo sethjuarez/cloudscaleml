@@ -5,3 +5,5 @@ logs/
 outputs/
 *.dot
 *.npz
+Untitled.ipynb
+*.tfrecords
