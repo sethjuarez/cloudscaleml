@@ -1,3 +1,3 @@
-python fetch.py -d data -t data -c tacos burrito -f
-python prep.py --data_path data --output_path data --target_output data -f
-REM python train.py -d train -e 3 -b 32 -l 0.0001 -o model -f train.txt
+REM python fetch.py -d data -t data -c tacos burrito -f
+REM python prep.py --data_path data --output_path data --target_output data -f
+python train.py --data_path data --output_path data --target_output data --epochs 5 --batch 10 --lr 0.0001
