@@ -1,5 +1,6 @@
 import os
 import csv
+import time
 import json
 import shutil
 import random
@@ -46,11 +47,16 @@ def fetch(data_path, target_output, categories, force):
         fetch_images(filters=LICENSE_FILTER, output=os.path.join(target_path, item), search_string=item)
 
     # need to wait on all threads
-    print('Threads created, need to wait')
-    for t in threading.enumerate():
-        if t.name == 'bbid':
-            print('Waiting on {}'.format(t))
-            t.join()
+    while True:
+        threads = [t for t in threading.enumerate() if t.name == 'bbid']
+        if len(threads) == 0:
+            break
+        else:
+            print('{} outstanding threads to wait for....'.format(len(threads)))
+            for t in threads:
+                print('Waiting on {}'.format(t))
+                t.join()
+            time.sleep(0.1)
 
     info('Generating metadata')
     print('writing out shuffled csv... ', end='')
@@ -59,7 +65,9 @@ def fetch(data_path, target_output, categories, force):
     index = dict((name, index) for index, name in enumerate(categories))
     # list of all image paths (shuffled)
     images = [p for p in list(raw_path.glob('*/*'))]
-    # shuffle
+    # shuffle (a couple of times for good measure #YOLO)
+    random.shuffle(images)
+    random.shuffle(images)
     random.shuffle(images)
 
     items = [[str(p.relative_to(raw_path)),  # path relative to raw
@@ -87,6 +95,10 @@ def fetch(data_path, target_output, categories, force):
 
     with open(str(out_file), 'w') as f:
         json.dump(output, f)
+
+    # copy fetch metadata to data folder for posterity...
+    n = os.path.join(target_path, '{}.json'.format('metadata'))
+    shutil.copyfile(out_file, n)
 
     print('\nDownloaded {} total items.'.format(len(items)))
 
